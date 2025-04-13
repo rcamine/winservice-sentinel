@@ -45,36 +45,37 @@ The application is configured using `appsettings.json`. Below is an example conf
 
 ```json
 {
-  "Services": [
-    "Service1",
-    "Service2",
-    "Service3"
-  ],
   "MonitoringSettings": {
-    "PollingIntervalMs": 30000
-  },
-  "NotificationSettings": {
-    "Email": {
-      "Enabled": true,
-      "Recipients": ["admin@example.com"]
-    },
-    "Teams": {
-      "Enabled": true,
-      "WebhookUrl": "https://example.com/teams-webhook"
-    },
-    "Slack": {
-      "Enabled": true,
-      "WebhookUrl": "https://example.com/slack-webhook"
-    }
+    "PollingIntervalMs": 5000,
+    "Services": [
+      {
+        "Name": "ServiceName1",
+        "Notifications": [
+          { "Type": "Email", "Target": "admin@example.com;admin2@example.com" },
+          { "Type": "Teams", "Target": "https://example.com/teams-webhook" },
+          { "Type": "Slack", "Target": "https://example.com/slack-webhook" }
+        ]
+      },
+      {
+        "Name": "ServiceName2",
+        "Notifications": [
+          { "Type": "Email", "Target": "admin@example.com" },
+          { "Type": "Teams", "Target": "https://example.com/teams-webhook" }
+        ]
+      }
+    ]
   }
 }
 ```
 
 ### Key Settings
 
-- `Services`: A list of Windows service names to monitor.
-- `MonitoringSettings:PollingIntervalMs`: The polling interval in milliseconds.
-- `NotificationSettings`: Configuration for email, Teams, and Slack notifications.
+- `MonitoringSettings.PollingIntervalMs`: The polling interval in milliseconds.
+- `MonitoringSettings.Services`: An array of services to monitor.
+  - `Name`: The name of the Windows service to monitor.
+  - `Notifications`: An array of notification configurations.
+    - `Type`: The notification type (`Email`, `Teams`, or `Slack`).
+    - `Target`: The notification destination (semicolon-separated email addresses or webhook URLs).
 
 ## Logging
 
