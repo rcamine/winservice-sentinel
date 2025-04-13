@@ -50,7 +50,7 @@ The application is configured using `appsettings.json`. Below is an example conf
     "Services": {
       "ServiceName1": {
         "Notifications": [
-          { "Type": "Email", "Target": "admin@example.com;admin2@example.com" },
+          { "Type": "Email", "Target": "admin@example.com,admin2@example.com" },
           { "Type": "Teams", "Target": "https://example.com/teams-webhook" },
           { "Type": "Slack", "Target": "https://example.com/slack-webhook" }
         ]
@@ -73,7 +73,7 @@ The application is configured using `appsettings.json`. Below is an example conf
   - Each key is the name of a Windows service to monitor.
   - Each service has a `Notifications` array containing notification configurations:
     - `Type`: The notification type (`Email`, `Teams`, or `Slack`).
-    - `Target`: The notification destination (semicolon-separated email addresses or webhook URLs).
+    - `Target`: The notification destination (comma-separated email addresses or webhook URLs).
 
 ## Logging
 
