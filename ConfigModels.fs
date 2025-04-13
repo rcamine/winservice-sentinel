@@ -2,7 +2,14 @@ namespace WinServiceSentinel
 
 module ConfigModels =
     [<CLIMutable>]
-    type ServiceListOptions = { Services: string[] }
+    type NotificationOptions = { Type: string; Target: string }
 
     [<CLIMutable>]
-    type MonitoringSettings = { PollingIntervalMs: int }
+    type ServiceOptions =
+        { Name: string
+          Notifications: NotificationOptions[] }
+
+    [<CLIMutable>]
+    type MonitoringSettings =
+        { PollingIntervalMs: int
+          Services: ServiceOptions[] }

@@ -17,21 +17,16 @@ module Program =
             Host
                 .CreateDefaultBuilder(argv)
                 .UseSerilog()
+                .UseWindowsService()
                 .ConfigureAppConfiguration(fun _ config ->
                     config.AddJsonFile("appsettings.json", optional = false, reloadOnChange = true)
                     |> ignore)
                 .ConfigureServices(fun hostContext services ->
 
-                    services.Configure<ServiceListOptions> hostContext.Configuration |> ignore
-
                     services.Configure<MonitoringSettings>(hostContext.Configuration.GetSection "MonitoringSettings")
                     |> ignore
 
-                    services.AddHostedService<ServiceMonitoringWorker>() |> ignore
-
-                    services.AddSingleton(Notification.createNotifiers hostContext.Configuration)
-                    |> ignore)
-                .UseWindowsService()
+                    services.AddHostedService<ServiceMonitoringWorker>() |> ignore)
 
         try
             builder.Build().Run()

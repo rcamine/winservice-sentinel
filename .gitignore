@@ -398,3 +398,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+.idea/.idea.winservice-sentinel.dir/.idea/encodings.xml
+.idea/.idea.winservice-sentinel.dir/.idea/indexLayout.xml
+.idea/.idea.winservice-sentinel.dir/.idea/vcs.xml
+.idea/.idea.winservice-sentinel.dir/.idea/projectSettingsUpdater.xml
+.idea/.idea.winservice-sentinel.dir/.idea/workspace.xml
