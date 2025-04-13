@@ -26,6 +26,9 @@ module Program =
                     services.Configure<MonitoringSettings>(hostContext.Configuration.GetSection "MonitoringSettings")
                     |> ignore
 
+                    services.Configure<EmailSettings>(hostContext.Configuration.GetSection "EmailSettings")
+                    |> ignore
+
                     services.AddHostedService<ServiceMonitoringWorker>() |> ignore)
 
         try

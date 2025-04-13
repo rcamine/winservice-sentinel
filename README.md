@@ -47,23 +47,21 @@ The application is configured using `appsettings.json`. Below is an example conf
 {
   "MonitoringSettings": {
     "PollingIntervalMs": 5000,
-    "Services": [
-      {
-        "Name": "ServiceName1",
+    "Services": {
+      "ServiceName1": {
         "Notifications": [
           { "Type": "Email", "Target": "admin@example.com;admin2@example.com" },
           { "Type": "Teams", "Target": "https://example.com/teams-webhook" },
           { "Type": "Slack", "Target": "https://example.com/slack-webhook" }
         ]
       },
-      {
-        "Name": "ServiceName2",
+      "ServiceName2": {
         "Notifications": [
           { "Type": "Email", "Target": "admin@example.com" },
           { "Type": "Teams", "Target": "https://example.com/teams-webhook" }
         ]
       }
-    ]
+    }
   }
 }
 ```
@@ -71,9 +69,9 @@ The application is configured using `appsettings.json`. Below is an example conf
 ### Key Settings
 
 - `MonitoringSettings.PollingIntervalMs`: The polling interval in milliseconds.
-- `MonitoringSettings.Services`: An array of services to monitor.
-  - `Name`: The name of the Windows service to monitor.
-  - `Notifications`: An array of notification configurations.
+- `MonitoringSettings.Services`: An object with service names as keys.
+  - Each key is the name of a Windows service to monitor.
+  - Each service has a `Notifications` array containing notification configurations:
     - `Type`: The notification type (`Email`, `Teams`, or `Slack`).
     - `Target`: The notification destination (semicolon-separated email addresses or webhook URLs).
 

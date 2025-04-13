@@ -27,42 +27,41 @@ module ServiceMonitor =
             Log.Error(ex, "Error checking service status for service '{ServiceName}'", serviceName)
             raise ex
 
-    let monitor serviceNames (monitoringOptions: IOptionsMonitor<MonitoringSettings>) =
+    let monitor
+        (monitoringSettings: IOptionsMonitor<MonitoringSettings>)
+        (emailSettings: IOptionsMonitor<EmailSettings>)
+        =
 
         task {
-            for serviceName in serviceNames do
-                let status = checkWinServiceStatus serviceName
+            for KeyValue(serviceName, serviceOptions) in monitoringSettings.CurrentValue.Services do
+                if serviceOptions.Enabled then
+                    let serviceStatus = checkWinServiceStatus serviceName
 
-                let notificationSettings =
-                    monitoringOptions.CurrentValue.Services
-                    |> Array.tryFind (fun service -> service.Name = serviceName)
-                    |> function
-                        | Some service -> service.Notifications
-                        | None -> [||] // Return a default value if not found
+                    if serviceStatus <> ServiceControllerStatus.Running then
+                        let notifiers =
+                            createNotifiers (serviceName, serviceOptions.Notifications, emailSettings.CurrentValue)
 
-                if status <> ServiceControllerStatus.Running then
-                    let notifiers = createNotifiers (serviceName, notificationSettings)
-
-                    for notifier in notifiers do
-                        use n = notifier
-                        do! n.SendNotification()
+                        for notifier in notifiers do
+                            use n = notifier
+                            do! n.SendNotification()
+                else
+                    Log.Debug("Skipping service '{ServiceName}' as it is disabled in configuration", serviceName)
         }
 
-    type ServiceMonitoringWorker(monitoringOptions: IOptionsMonitor<MonitoringSettings>) =
+    type ServiceMonitoringWorker
+        (monitorSettings: IOptionsMonitor<MonitoringSettings>, emailSettings: IOptionsMonitor<EmailSettings>) =
         inherit BackgroundService()
 
         override _.ExecuteAsync(cancellationToken: CancellationToken) =
             task {
                 while not cancellationToken.IsCancellationRequested do
 
-                    let serviceNames = monitoringOptions.CurrentValue.Services |> Seq.map _.Name
-
                     let pollingIntervalMs =
-                        match monitoringOptions.CurrentValue.PollingIntervalMs with
+                        match monitorSettings.CurrentValue.PollingIntervalMs with
                         | ms when ms <= 0 -> 10000 // Default if not configured or invalid
                         | ms -> ms
 
-                    do! monitor serviceNames monitoringOptions
+                    do! monitor monitorSettings emailSettings
 
                     do! Task.Delay(pollingIntervalMs, cancellationToken)
             }
